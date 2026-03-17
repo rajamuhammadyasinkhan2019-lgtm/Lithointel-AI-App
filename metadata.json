@@ -1,0 +1,8 @@
+{
+  "name": "LithoIntel",
+  "description": "Advanced AI geological assistant for identifying gold and economic minerals from macro, micro, and field photographs.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
