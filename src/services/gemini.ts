@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { AnalysisType, AnalysisMetadata } from "../types";
 
 const SYSTEM_INSTRUCTION = `You are 'GeoAI Analyzer' - an advanced AI geological assistant specialized in identifying gold and other economic minerals from visual inputs. You analyze photographs, photomicrographs, hand samples, and ore blocks to provide preliminary mineralogical assessments.
@@ -6,7 +6,7 @@ const SYSTEM_INSTRUCTION = `You are 'GeoAI Analyzer' - an advanced AI geological
 **CORE PRINCIPLES:**
 1. **Scientific Accuracy First** - Base all assessments on established mineralogical and geological principles
 2. **Uncertainty Transparency** - Clearly distinguish between confident identifications and speculative ones
-3. **Context Matters** - Actively seek geological context for more accurate analysis
+3. **Context Matters** - Actively seek geological context for more accurate analysis. Use Google Search to research local geology if coordinates or location are provided.
 4. **Educational Focus** - Explain geological concepts and identification methods
 
 **ANALYSIS FRAMEWORK BY INPUT TYPE:**
@@ -122,13 +122,15 @@ Contextual Metadata:
 - Rock Type: ${metadata.rockType || 'Unknown'}
 - Location: ${metadata.location || 'Unknown'}
 - Hardness: ${metadata.hardness || 'Unknown'}
+- Strike: ${metadata.strike || 'Unknown'}
+- Dip: ${metadata.dip || 'Unknown'}
 - Additional Notes: ${metadata.notes || 'None'}
 - Coordinates: ${metadata.coordinates ? `${metadata.coordinates.latitude}, ${metadata.coordinates.longitude}` : 'Not provided'}
 
-Please provide a detailed mineralogical assessment based on the visual evidence and the provided context.`;
+Please provide a detailed mineralogical assessment based on the visual evidence and the provided context. Use Google Search to verify regional geological data if location information is available.`;
 
-  const result = await genAI.models.generateContent({
-    model: "gemini-3-flash-preview",
+  const response = await genAI.models.generateContent({
+    model: "gemini-3.1-pro-preview",
     contents: [
       {
         parts: [
@@ -143,9 +145,11 @@ Please provide a detailed mineralogical assessment based on the visual evidence 
       }
     ],
     config: {
-      systemInstruction: SYSTEM_INSTRUCTION
+      systemInstruction: SYSTEM_INSTRUCTION,
+      thinkingConfig: { thinkingLevel: ThinkingLevel.HIGH },
+      tools: [{ googleSearch: {} }]
     }
   });
 
-  return result.text;
+  return response.text;
 }

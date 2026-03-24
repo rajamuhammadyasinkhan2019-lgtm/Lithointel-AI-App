@@ -1,9 +1,12 @@
 export type AnalysisType = 'macro' | 'micro' | 'field';
 
 export interface AnalysisMetadata {
+  sampleId?: string;
   rockType?: string;
   location?: string;
   hardness?: string;
+  dip?: string;
+  strike?: string;
   notes?: string;
   timestamp: number;
   coordinates?: {

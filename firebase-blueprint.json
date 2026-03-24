@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Analysis": {
+      "title": "Analysis",
+      "description": "Geological analysis result",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "image": { "type": "string", "description": "Base64 image data" },
+        "type": { "type": "string", "enum": ["macro", "micro", "field"] },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "sampleId": { "type": "string" },
+            "rockType": { "type": "string" },
+            "location": { "type": "string" },
+            "hardness": { "type": "string" },
+            "dip": { "type": "string" },
+            "strike": { "type": "string" },
+            "notes": { "type": "string" },
+            "timestamp": { "type": "number" },
+            "coordinates": {
+              "type": "object",
+              "properties": {
+                "latitude": { "type": "number" },
+                "longitude": { "type": "number" }
+              }
+            }
+          }
+        },
+        "response": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "userId", "image", "type", "response", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/analyses/{analysisId}": {
+      "schema": "Analysis",
+      "description": "Geological analysis records"
+    }
+  }
+}

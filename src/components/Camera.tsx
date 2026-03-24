@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { Camera as CameraIcon, RefreshCw, X } from 'lucide-react';
+import { Camera as CameraIcon, RefreshCw, X, AlertCircle } from 'lucide-react';
 
 interface CameraProps {
   onCapture: (image: string) => void;
@@ -53,54 +53,82 @@ export const Camera: React.FC<CameraProps> = ({ onCapture, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black z-50 flex flex-col">
-      <div className="flex justify-between items-center p-4 text-white">
-        <h2 className="text-lg font-medium">Capture Sample</h2>
-        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full">
+    <div className="fixed inset-0 bg-paper ag-grid z-50 flex flex-col">
+      <div className="flex justify-between items-center p-6 bg-white border-b-4 border-ink shadow-[0_4px_0_0_rgba(0,0,0,1)]">
+        <div className="flex items-center gap-4">
+          <div className="w-8 h-8 bg-ink flex items-center justify-center shadow-[2px_2px_0_0_rgba(0,255,0,1)]">
+            <CameraIcon size={18} className="text-neon" />
+          </div>
+          <h2 className="text-xs font-mono font-bold uppercase tracking-[0.3em] text-ink">Optical // <span className="text-neon bg-ink px-2">Input</span></h2>
+        </div>
+        <button 
+          onClick={onClose} 
+          className="p-3 bg-white border-2 border-ink hover:bg-neon transition-all shadow-[2px_2px_0_0_rgba(0,0,0,1)] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+        >
           <X size={24} />
         </button>
       </div>
 
-      <div className="flex-1 relative overflow-hidden bg-neutral-900">
+      <div className="flex-1 relative overflow-hidden bg-ink m-6 ag-border shadow-[12px_12px_0_0_rgba(0,0,0,1)]">
         {error ? (
-          <div className="absolute inset-0 flex items-center justify-center p-8 text-center text-white">
+          <div className="absolute inset-0 flex items-center justify-center p-8 text-center text-neon font-mono uppercase tracking-widest">
+            <AlertCircle size={48} className="mb-4 mx-auto" />
             <p>{error}</p>
           </div>
         ) : (
-          <video 
-            ref={videoRef} 
-            autoPlay 
-            playsInline 
-            className="w-full h-full object-cover"
-          />
+          <>
+            <video 
+              ref={videoRef} 
+              autoPlay 
+              playsInline 
+              className="w-full h-full object-cover opacity-80"
+            />
+            {/* Scanning Overlay */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-1/2 left-0 w-full h-0.5 bg-neon/30 shadow-[0_0_15px_rgba(0,255,0,0.5)] animate-scan" />
+              <div className="absolute inset-0 border-[40px] border-ink/40" />
+              
+              {/* Corner Brackets */}
+              <div className="absolute top-12 left-12 w-12 h-12 border-t-4 border-l-4 border-neon shadow-[-4px_-4px_0_0_rgba(0,0,0,1)]" />
+              <div className="absolute top-12 right-12 w-12 h-12 border-t-4 border-r-4 border-neon shadow-[4px_-4px_0_0_rgba(0,0,0,1)]" />
+              <div className="absolute bottom-12 left-12 w-12 h-12 border-b-4 border-l-4 border-neon shadow-[-4px_4px_0_0_rgba(0,0,0,1)]" />
+              <div className="absolute bottom-12 right-12 w-12 h-12 border-b-4 border-r-4 border-neon shadow-[4px_4px_0_0_rgba(0,0,0,1)]" />
+              
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 border-2 border-neon/50 rotate-45" />
+            </div>
+          </>
         )}
         
         {/* Scale Bar Overlay */}
-        <div className="absolute bottom-24 left-8 right-8 pointer-events-none">
-          <div className="flex flex-col items-start">
-            <div className="w-24 h-1 bg-white shadow-lg" />
-            <span className="text-[10px] text-white font-mono mt-1 bg-black/50 px-1">SCALE REF</span>
+        <div className="absolute bottom-12 left-12 pointer-events-none">
+          <div className="flex flex-col items-start gap-2">
+            <div className="flex gap-1">
+              {[1,2,3,4,5].map(i => (
+                <div key={i} className={`w-4 h-2 ${i % 2 === 0 ? 'bg-neon' : 'bg-white'}`} />
+              ))}
+            </div>
+            <span className="text-[9px] text-neon font-mono font-bold bg-ink px-2 py-0.5 uppercase tracking-widest">Scale Ref // 5cm</span>
           </div>
         </div>
       </div>
 
-      <div className="p-8 flex justify-center items-center gap-8 bg-black/80 backdrop-blur-md">
+      <div className="p-10 flex justify-center items-center gap-12 bg-white border-t-4 border-ink shadow-[0_-4px_0_0_rgba(0,0,0,1)]">
         <button 
           onClick={startCamera}
-          className="p-4 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+          className="p-5 bg-white border-2 border-ink hover:bg-neon transition-all shadow-[4px_4px_0_0_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 active:shadow-none"
         >
-          <RefreshCw size={24} />
+          <RefreshCw size={28} className="text-ink" />
         </button>
         
         <button 
           onClick={capture}
           disabled={!isReady}
-          className="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-xl active:scale-95 transition-transform disabled:opacity-50"
+          className="w-24 h-24 bg-ink border-4 border-neon flex items-center justify-center shadow-[8px_8px_0_0_rgba(0,0,0,1)] hover:scale-105 active:scale-95 transition-all disabled:opacity-50 group"
         >
-          <div className="w-16 h-16 rounded-full border-4 border-black/10" />
+          <div className="w-16 h-16 border-2 border-neon/30 group-hover:border-neon transition-colors" />
         </button>
 
-        <div className="w-12" /> {/* Spacer */}
+        <div className="w-16" /> {/* Spacer */}
       </div>
 
       <canvas ref={canvasRef} className="hidden" />

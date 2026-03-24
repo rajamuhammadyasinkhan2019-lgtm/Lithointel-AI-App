@@ -1,51 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --color-neon: #00FF00;
+  --color-ink: #000000;
+  --color-paper: #FFFFFF;
+  --color-line: #E5E5E5;
 }
 
 @layer base {
+  body {
+    @apply bg-paper text-ink selection:bg-neon selection:text-ink;
+  }
   .markdown-body {
-    @apply text-neutral-800 leading-relaxed;
+    @apply text-ink leading-relaxed font-sans;
   }
   .markdown-body h1 {
-    @apply text-xl font-black tracking-tight mt-8 mb-4 uppercase;
+    @apply text-2xl font-bold tracking-tighter mt-10 mb-6 uppercase border-b border-line pb-2;
   }
   .markdown-body h2 {
-    @apply text-lg font-bold tracking-tight mt-6 mb-3;
+    @apply text-xl font-bold tracking-tight mt-8 mb-4 border-l-4 border-neon pl-4;
   }
   .markdown-body h3 {
-    @apply text-base font-bold mt-4 mb-2;
+    @apply text-lg font-bold mt-6 mb-3;
   }
   .markdown-body p {
-    @apply mb-4;
+    @apply mb-5 text-sm md:text-base;
   }
   .markdown-body ul, .markdown-body ol {
-    @apply mb-4 ml-6 list-disc;
+    @apply mb-5 ml-6 list-none space-y-2;
   }
   .markdown-body li {
-    @apply mb-1;
+    @apply relative pl-6;
+  }
+  .markdown-body li::before {
+    content: "→";
+    @apply absolute left-0 text-neon font-bold;
   }
   .markdown-body strong {
-    @apply font-bold text-neutral-900;
+    @apply font-bold text-ink bg-neon/10 px-1;
   }
   .markdown-body blockquote {
-    @apply border-l-4 border-neutral-200 pl-4 italic my-4 text-neutral-500;
+    @apply border-l-2 border-ink pl-6 italic my-6 text-ink/60 bg-neutral-50 py-4;
   }
+}
+
+/* Antigravity Grid System */
+.ag-grid {
+  background-image: radial-gradient(var(--color-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.ag-border {
+  @apply border-2 border-ink;
+}
+
+.ag-card {
+  @apply bg-white border-2 border-ink shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all;
+}
+
+.ag-button {
+  @apply bg-ink text-neon px-6 py-4 font-mono font-bold uppercase tracking-[0.3em] hover:bg-neon hover:text-ink transition-all active:translate-x-1 active:translate-y-1 active:shadow-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)];
+}
+
+@keyframes scan {
+  0% { top: 0%; }
+  100% { top: 100%; }
+}
+
+.animate-scan {
+  animation: scan 3s linear infinite;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  @apply bg-paper border-l border-line;
 }
 ::-webkit-scrollbar-thumb {
-  background: #e5e5e5;
-  border-radius: 10px;
+  @apply bg-ink border-2 border-paper;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #d4d4d4;
+  @apply bg-neon;
 }
